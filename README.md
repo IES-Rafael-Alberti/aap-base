@@ -47,18 +47,29 @@ sube a git). Si prefieres hacerlo a mano, copia `.env.ejemplo` a `.env` y rellé
 
 > Pon un **límite de gasto** en la clave del modelo antes de lanzar nada.
 
-### 3.2 El objetivo y el alcance
+### 3.2 Elige tu objetivo y pon su alcance
 
-Edita **`scope.txt`**: la lista blanca de lo que el agente puede tocar. Una entrada
-por línea:
+El agente solo tocará lo que autorices en **`scope.txt`**. Prepáralo en tres pasos:
 
-```
-nextcloud.com          # dominio exacto
-*.nextcloud.com        # subdominios (no incluye nextcloud.com)
-10.10.0.0/24           # un rango de IPs (para labs)
-!blog.nextcloud.com    # exclusión: lo de ! queda SIEMPRE fuera
-```
+1. **Elige un objetivo que te autorice a investigarlo.** Lo normal es un **programa
+   público de bug bounty** (HackerOne, Bugcrowd, Intigriti…), donde la empresa invita
+   por escrito a investigar lo que esté dentro de su alcance. También vale tu
+   laboratorio.
 
+2. **Mira el alcance en la página del programa.** Verás dos listas:
+   - **In scope** (autorizado) → va tal cual en `scope.txt`.
+   - **Out of scope** (excluido) → va con `!` delante.
+
+3. **Tradúcelo** al formato de `scope.txt` (una entrada por línea):
+
+   ```
+   empresa.com          # dominio exacto
+   *.empresa.com        # subdominios (no incluye empresa.com)
+   10.10.0.0/24         # un rango de IPs (para labs)
+   !blog.empresa.com    # exclusión: lo de ! queda SIEMPRE fuera
+   ```
+
+El propio `scope.txt` trae estas instrucciones y un sitio marcado para escribir.
 Compruébalo antes de lanzar:
 
 ```bash

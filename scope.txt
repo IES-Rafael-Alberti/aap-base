@@ -1,10 +1,38 @@
-# Alcance autorizado. Una entrada por línea.
-#   empresa.com        dominio exacto
-#   *.empresa.com      subdominios (no incluye empresa.com)
-#   10.10.0.0/24       rango de IPs
-#   !blog.empresa.com  exclusión: gana siempre
+# ===========================================================================
+#  TU ALCANCE AUTORIZADO
+# ===========================================================================
+#  Este fichero es la LISTA BLANCA del agente: solo tocará lo que esté aquí.
+#  Lo que no aparezca, queda fuera. Aunque el modelo "quiera" salirse, el
+#  scope-guard se lo impide.
 #
-# Sustituye estos ejemplos por el alcance de tu programa o tu laboratorio.
-empresa.com
-*.empresa.com
-!blog.empresa.com
+#  CÓMO RELLENARLO (3 pasos):
+#
+#  1) ELIGE un objetivo que te AUTORICE a investigarlo: un programa público
+#     de bug bounty (HackerOne, Bugcrowd, Intigriti...) o tu laboratorio.
+#
+#  2) MIRA su alcance en la página del programa. Verás dos listas:
+#        - "In scope"      -> lo autorizado        -> va tal cual aquí
+#        - "Out of scope"  -> lo excluido           -> va con ! delante
+#
+#  3) TRADÚCELO a este formato (una entrada por línea):
+#        empresa.com          dominio exacto
+#        *.empresa.com        cualquier subdominio (NO incluye empresa.com)
+#        10.10.0.0/24         un rango de IPs (para laboratorio)
+#        192.168.56.20        una IP exacta
+#        !blog.empresa.com    EXCLUSIÓN: lo de ! queda SIEMPRE fuera
+#        # ...                las líneas con # y las vacías se ignoran
+#
+#  Reglas, en orden: exclusiones (!) ganan siempre -> coincidencia exacta ->
+#  comodines y rangos -> y por defecto, FUERA.
+#
+#  Comprueba tu alcance antes de lanzar (ver README, paso 3.2).
+# ===========================================================================
+
+
+# -------------------- ESCRIBE AQUÍ TU ALCANCE --------------------
+# (borra el ejemplo de abajo y pon el tuyo)
+
+# Ejemplo (prográmalo con TU objetivo real):
+# empresa.com
+# *.empresa.com
+# !blog.empresa.com
