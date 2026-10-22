@@ -6,3 +6,6 @@ salida/
 
 # Guía del profesor (no se distribuye)
 GUIA.md
+
+# Solución del profesor (las 12 tools); el alumnado las construye
+herramientas/recon.py

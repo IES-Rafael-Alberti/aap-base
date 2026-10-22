@@ -19,16 +19,16 @@ from alcance import cargar                  # noqa: E402
 from modelo import Modelo                   # noqa: E402
 from traza import Traza                     # noqa: E402
 from whois import whois_dominio             # noqa: E402
-from recon import (                         # noqa: E402
-    dns_registros, subdominios_crtsh, subdominios_subfinder,
-    ficheros_expuestos, wayback_urls, correos_personas, hunter_io,
-    infraestructura_ip, correo_postura, urlscan_busqueda, shodan_host,
-)
+
+# A medida que construyas tus herramientas en herramientas/tus_herramientas.py,
+# impórtalas aquí y añádelas a la lista. Por ejemplo:
+#   from tus_herramientas import dns_registros, subdominios_crtsh
 
 HERRAMIENTAS = [
-    whois_dominio, dns_registros, subdominios_crtsh, subdominios_subfinder,
-    ficheros_expuestos, wayback_urls, correos_personas, hunter_io,
-    infraestructura_ip, correo_postura, urlscan_busqueda, shodan_host,
+    whois_dominio,
+    # dns_registros,
+    # subdominios_crtsh,
+    # ... añade las tuyas
 ]
 
 

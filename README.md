@@ -73,16 +73,31 @@ PY
 
 ### 3.3 Las herramientas
 
-El agente trae 12 herramientas de recon pasivo. Dos necesitan una clave gratuita
-(`hunter_io` → [hunter.io](https://hunter.io), `shodan_host` → [shodan.io](https://shodan.io));
-sin ella avisan y las demás siguen funcionando. La lista de herramientas activas está
-en `HERRAMIENTAS`, dentro de `lanzar.py`.
+El sistema trae **una herramienta de ejemplo ya hecha** (`whois_dominio`, en
+`herramientas/whois.py`) y es la única activa de partida. **El resto las construyes
+tú**: ese es el trabajo del proyecto (Parte 2.2).
+
+En `herramientas/tus_herramientas.py` tienes plantillas con `TODO` para empezar
+(`dns_registros`, `subdominios_crtsh`) y, en la cabecera, la lista de herramientas
+pasivas que puedes añadir. Cuando termines una:
+
+1. Escríbela siguiendo el modelo de `whois.py` (una tarea, protegida, sin shell, con
+   timeout, salida recortada, errores como texto).
+2. Impórtala en `lanzar.py` y añádela a la lista `HERRAMIENTAS`.
+
+Algunas herramientas necesitan una clave gratuita (p. ej. hunter.io o shodan.io); si
+decides construirlas, añade su clave al `.env`.
 
 ## 4. Uso
 
+De partida, con la herramienta de ejemplo, ya puedes lanzarlo:
+
 ```bash
-.venv/bin/python lanzar.py "Haz un reconocimiento pasivo completo de nextcloud.com usando todas las herramientas. Termina con un informe."
+.venv/bin/python lanzar.py "Investiga el dominio <tu-objetivo>. Termina con un informe."
 ```
+
+El informe será pobre hasta que añadas más herramientas (paso 3.3): cuantas más tenga
+el agente, más completo será su reconocimiento.
 
 Opciones útiles: `--max-pasos N`, `--max-tokens N`, y la variable `AAP_TIMEOUT`
 (segundos de espera al modelo) si el modelo es lento:
