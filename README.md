@@ -1,8 +1,7 @@
 # aap-base · First Agent
 
 La primera pieza del **Auditor Agéntico Progresivo**: un agente de reconocimiento
-**pasivo** que solo actúa dentro de lo que autorizas en `scope.txt`. Es el esqueleto
-que vas a extender en el proyecto *Know Your Target* (UD1).
+**pasivo** que solo actúa dentro de lo que autorizas en `scope.txt`.
 
 > Se ejecuta **dentro de tu Kali del laboratorio** y solo hace reconocimiento pasivo.
 > No lo lances contra nada que no estés autorizado a investigar.
