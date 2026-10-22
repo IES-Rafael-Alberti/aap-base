@@ -111,6 +111,17 @@ De partida, con la herramienta de ejemplo, ya puedes lanzarlo:
 El informe será pobre hasta que añadas más herramientas (paso 3.3): cuantas más tenga
 el agente, más completo será su reconocimiento.
 
+**El prompt se construye solo** a partir de tu `scope.txt` y de las herramientas
+activas (lo fijo está en `instrucciones.md`, que normalmente no necesitas tocar).
+Para ver el prompt ya montado, sin llamar al modelo ni gastar nada:
+
+```bash
+.venv/bin/python lanzar.py --ver-prompt
+```
+
+Cambia tu `scope.txt` o añade una herramienta y vuelve a ejecutarlo: verás cómo
+cambia el prompt.
+
 Opciones útiles: `--max-pasos N`, `--max-tokens N`, y la variable `AAP_TIMEOUT`
 (segundos de espera al modelo) si el modelo es lento:
 
@@ -142,7 +153,7 @@ cat salida/traza.log
 | `alcance/` | `en_alcance` (reglas de `scope.txt`) y `protegida` (el `scope-guard`) | No (viene hecho) |
 | `herramientas/` | `whois.py` de ejemplo y tus herramientas | Sí |
 | `scope.txt` | El alcance autorizado | Sí |
-| `instrucciones.md` | El *prompt* de sistema del agente | Sí |
+| `instrucciones.md` | Plantilla del *prompt*; el alcance y las herramientas se rellenan solos | Opcional |
 | `lanzar.py` | Arranca el agente (lista `HERRAMIENTAS`) | La lista |
 | `ver_traza.py` | Convierte la traza en un log legible | No |
 
@@ -150,7 +161,7 @@ El motor **rechaza cualquier herramienta que no esté protegida** por el `scope-
 
 ## Si algo falla
 
-| Síntoma | Qué hacer |
+| Problema | Qué hacer |
 |---|---|
 | `Falta la clave: define AAP_API_KEY` | Ejecuta `./configurar.sh` |
 | `El modelo no respondió en 300 s` | Relanza con `AAP_TIMEOUT=600` |
