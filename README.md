@@ -40,9 +40,9 @@ El agente habla con un modelo de lenguaje. Guarda sus datos con el asistente:
 ./configurar.sh
 ```
 
-Te pide el **endpoint**, el **modelo** (serving name), la **clave** y, opcionalmente,
-las claves de Hunter.io y Shodan. Todo queda en el fichero `.env` (que **nunca** se
-sube a git). Si prefieres hacerlo a mano, copia `.env.ejemplo` a `.env` y rellénalo.
+Te pide el **endpoint**, el **modelo** (serving name) y la **clave** del modelo. Todo
+queda en el fichero `.env` (que **nunca** se sube a git). Si prefieres hacerlo a mano,
+copia `.env.ejemplo` a `.env` y rellénalo.
 
 > Pon un **límite de gasto** en la clave del modelo antes de lanzar nada.
 
@@ -95,8 +95,10 @@ pasivas que puedes añadir. Cuando termines una:
    timeout, salida recortada, errores como texto).
 2. Impórtala en `lanzar.py` y añádela a la lista `HERRAMIENTAS`.
 
-Algunas herramientas necesitan una clave gratuita (p. ej. hunter.io o shodan.io); si
-decides construirlas, añade su clave al `.env`.
+Muchas herramientas de recon no necesitan clave. Si construyes alguna que sí (por
+ejemplo, una que use una API con registro), añade su clave al `.env` con el formato
+`NOMBRE_API_KEY=valor` y léela en tu herramienta con
+`os.environ.get("NOMBRE_API_KEY")`. Así la clave no queda escrita en el código.
 
 ## 4. Uso
 

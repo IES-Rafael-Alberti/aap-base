@@ -18,21 +18,17 @@ echo
 
 [ -n "$clave" ] || { echo "No has escrito ninguna clave. No se ha cambiado nada."; exit 1; }
 
-echo
-echo "== Claves de herramientas (opcionales, Enter para saltar) =="
-read -rsp "HUNTER_API_KEY (correos, hunter.io): " hunter; echo
-read -rsp "SHODAN_API_KEY (servicios, shodan.io): " shodan; echo
-
 umask 077
 {
   echo "AAP_API_KEY=$clave"
   echo "AAP_URL=${url:-$URL_POR_DEFECTO}"
   [ -n "$modelo" ] && echo "AAP_MODELO=$modelo"
-  [ -n "$hunter" ] && echo "HUNTER_API_KEY=$hunter"
-  [ -n "$shodan" ] && echo "SHODAN_API_KEY=$shodan"
 } > .env
 chmod 600 .env
 
 echo
 echo "Guardado en $(pwd)/.env (solo lo puede leer tu usuario)."
-echo "Claves guardadas: $(grep -oE '^[A-Z_]+' .env | tr '\n' ' ')"
+echo
+echo "Si alguna herramienta que construyas necesita su propia clave de API,"
+echo "añádela a mano al fichero .env con el formato:  NOMBRE_API_KEY=tu_valor"
+echo "y léela en tu herramienta con os.environ.get(\"NOMBRE_API_KEY\")."
