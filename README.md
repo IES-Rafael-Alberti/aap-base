@@ -83,7 +83,7 @@ PY
 
 ### 3.3 Las herramientas
 
-El sistema trae **una herramienta de ejemplo ya hecha** (`whois_dominio`, en
+El sistema incluye **una herramienta de ejemplo** (`whois_dominio`, en
 `herramientas/whois.py`) y es la única activa de partida. **El resto las construyes
 tú**: ese es el trabajo del proyecto (Parte 2.2).
 
