@@ -85,7 +85,7 @@ PY
 
 El sistema incluye **una herramienta de ejemplo** (`whois_dominio`, en
 `herramientas/whois.py`) y es la única activa de partida. **El resto las tienes que
-incluir tú**: ese es el trabajo del proyecto (Parte 2.2).
+incluir tú**.
 
 En `herramientas/tus_herramientas.py` tienes plantillas con `TODO` para empezar
 (`dns_registros`, `subdominios_crtsh`) y, en la cabecera, la lista de herramientas
