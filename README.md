@@ -138,7 +138,7 @@ cat salida/traza.log
 | Carpeta / fichero | Qué es | ¿Lo tocas? |
 |---|---|---|
 | `motor/` | El bucle, el cliente del modelo y la traza | No |
-| `alcance/` | `en_alcance` (reglas de `scope.txt`) y `protegida` (el `scope-guard`) | Sí |
+| `alcance/` | `en_alcance` (reglas de `scope.txt`) y `protegida` (el `scope-guard`) | No (viene hecho) |
 | `herramientas/` | `whois.py` de ejemplo y tus herramientas | Sí |
 | `scope.txt` | El alcance autorizado | Sí |
 | `instrucciones.md` | El *prompt* de sistema del agente | Sí |
