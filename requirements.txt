@@ -1,0 +1,3 @@
+# El motor del agente solo usa la biblioteca estándar de Python: no necesita nada.
+# pytest solo hace falta para ejecutar las pruebas (carpetas alcance/ y motor/).
+pytest==8.3.3

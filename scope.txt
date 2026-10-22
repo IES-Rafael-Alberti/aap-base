@@ -1,0 +1,10 @@
+# Alcance autorizado. Una entrada por línea.
+#   empresa.com        dominio exacto
+#   *.empresa.com      subdominios (no incluye empresa.com)
+#   10.10.0.0/24       rango de IPs
+#   !blog.empresa.com  exclusión: gana siempre
+#
+# Sustituye estos ejemplos por el alcance de tu programa o tu laboratorio.
+empresa.com
+*.empresa.com
+!blog.empresa.com
