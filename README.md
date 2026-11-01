@@ -32,19 +32,29 @@ para las pruebas, que comprueban el `scope-guard` y el motor sin usar Internet.
 
 ## 3. Configuración
 
-### 3.1 El modelo (obligatorio)
+### 3.1 El modelo
 
-El agente habla con un modelo de lenguaje. Guarda sus datos con el asistente:
+**En el Kali del aula no tienes que hacer nada.** Si no tocas nada, el agente usa la
+IA del aula; si configuras tu `.env`, usa lo que pongas ahí.
+
+- La IA del aula la pone el profesor al entregarte la clave: queda en `~/.aula-ia.env`
+  (el agente la lee de ahí) y tienes una copia legible en `Acceso-IA.txt`, en el escritorio.
+- Para verla o guardarla en tu `.env`, o para usar **otro proveedor** fuera del aula,
+  ejecuta el asistente:
 
 ```bash
 ./configurar.sh
 ```
 
-Te pide el **endpoint**, el **modelo** (serving name) y la **clave** del modelo. Todo
-queda en el fichero `.env` (que **nunca** se sube a git). Si prefieres hacerlo a mano,
+Te pide el **endpoint**, el **modelo** (serving name) y la **clave**. En el Kali del
+aula, **Enter** deja los datos del aula. Todo queda en el fichero `.env` (que **nunca**
+se sube a git), sin tocar las demás líneas que tengas. Si prefieres hacerlo a mano,
 copia `.env.ejemplo` a `.env` y rellénalo.
 
-> Pon un **límite de gasto** en la clave del modelo antes de lanzar nada.
+Orden de preferencia: variables de la terminal → `.env` → `~/.aula-ia.env`. Si `.env`
+tiene clave, de ahí salen también el endpoint y el modelo.
+
+> Con un proveedor propio, pon un **límite de gasto** en la clave antes de lanzar nada.
 
 ### 3.2 Elige tu objetivo y pon su alcance
 
@@ -163,7 +173,8 @@ El motor **rechaza cualquier herramienta que no esté protegida** por el `scope-
 
 | Problema | Qué hacer |
 |---|---|
-| `Falta la clave: define AAP_API_KEY` | Ejecuta `./configurar.sh` |
+| `Tu Kali no tiene la IA del aula configurada` | En el aula: pide al profesor que te entregue la clave IA |
+| `Falta la clave: define AAP_API_KEY` | Fuera del aula: ejecuta `./configurar.sh` |
 | `El modelo no respondió en 300 s` | Relanza con `AAP_TIMEOUT=600` |
 | Un dominio no entra y debería | Revisa `scope.txt` con el comando del paso 3.2 |
 | `BLOQUEADO: ...` en la traza | Es correcto: el `scope-guard` hizo su trabajo |
@@ -177,3 +188,27 @@ El motor **rechaza cualquier herramienta que no esté protegida** por el `scope-
   correos ni nombres.
 - **No te fíes del informe**: contrástalo con la traza antes de darlo por bueno.
 - El `.env` con tus claves **nunca** va a git.
+
+
+## IA del aula desde el Kali
+
+Al entregarte la clave, el profesor deja en tu Kali `~/.aula-ia.env` (servidor, modelo
+`corsario-N` y clave) y su copia legible `Acceso-IA.txt` en el escritorio. Si ya tienes
+`~/aap-base/.env`, también actualiza ahí `AAP_URL`, `AAP_MODELO` y `AAP_API_KEY`, y
+conserva tus otras líneas. No ejecutes `~/.aula-ia.env` como shell ni compartas esos ficheros.
+
+Con la clave del aula solo valen los modelos de tu aula: `aula-N` y `corsario-N`.
+`ia-cupo` muestra tu gasto y cuándo se renueva, sin enseñar la clave.
+
+| Mensaje | Qué hacer |
+|---|---|
+| Sin configuración | Pide al profesor que te entregue la clave IA |
+| Clave no válida (401) | Pide al profesor que revise la entrega o la rotación |
+| Modelo no disponible (403) | Usa el modelo de tu aula (`corsario-N` o `aula-N`) |
+| Cupo agotado (422) | Espera a la renovación; consúltala con `ia-cupo` |
+| 404/429 | Se consulta tu cupo: puede estar agotado, o es un límite de ritmo (espera un minuto) |
+| Sin conexión o tiempo agotado | Avisa al profesor |
+
+La consulta del cupo usa solo `http://10.30.0.6:4001/cupo` con tu clave; ninguna clave
+de administración llega al Kali. Rotar la clave no reinicia el cupo. Si el servicio no
+responde, no se inventa un saldo: reintenta más tarde o avisa al profesor.
