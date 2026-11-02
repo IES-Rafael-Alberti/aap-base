@@ -19,6 +19,25 @@ git clone https://github.com/IES-Rafael-Alberti/aap-base.git
 cd aap-base
 ```
 
+Clónalo en tu carpeta personal: queda en `~/aap-base`, que es donde el profesor
+actualiza tus datos de IA. Para recibir mejoras más adelante: `git pull` dentro de
+`~/aap-base` (no toca tus archivos).
+
+**El repositorio es privado** (equipo de ciber): necesitas tu cuenta de GitHub en la
+organización. GitHub no acepta tu contraseña al clonar; la forma más sencilla es
+iniciar sesión una vez con `gh`:
+
+```bash
+sudo apt install -y gh       # si tu Kali no lo tiene
+gh auth login                # GitHub.com → HTTPS → Login with a web browser
+gh auth setup-git            # git usará esa sesión para clone y pull
+```
+
+`gh auth login` te da un código: ábrelo en `github.com/login/device` desde cualquier
+navegador. Alternativa sin `gh`: al clonar, escribe tu usuario y, como contraseña, un
+*fine-grained token* (GitHub → Settings → Developer settings) con acceso **solo de
+lectura** a este repositorio y con caducidad.
+
 ## 2. Instalación
 
 ```bash
