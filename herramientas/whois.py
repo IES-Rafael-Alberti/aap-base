@@ -23,9 +23,20 @@ def recortar(texto: str, maximo: int = MAX_CARACTERES) -> str:
     return texto[:maximo] + f"\n[... recortado: {len(texto) - maximo} caracteres más]"
 
 
+def _servidor_rdap(dominio: str) -> str:
+    """Servidor RDAP del registro del dominio, según el directorio oficial de IANA."""
+    tld = dominio.rstrip(".").rsplit(".", 1)[-1].lower()
+    with urllib.request.urlopen("https://data.iana.org/rdap/dns.json", timeout=20) as r:
+        servicios = json.load(r)["services"]
+    for tlds, urls in servicios:
+        if tld in tlds:
+            return urls[0].rstrip("/") + "/"
+    raise ValueError(f"el registro de .{tld} no ofrece RDAP")
+
+
 def _rdap(dominio: str) -> str:
     """WHOIS por HTTPS (RDAP). Útil donde el puerto 43 está cerrado."""
-    req = urllib.request.Request(f"https://rdap.org/domain/{dominio}",
+    req = urllib.request.Request(f"{_servidor_rdap(dominio)}domain/{dominio}",
                                  headers={"User-Agent": "aap-recon/1.0"})
     with urllib.request.urlopen(req, timeout=20) as r:
         d = json.load(r)
