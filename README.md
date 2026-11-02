@@ -43,7 +43,7 @@ lectura** a este repositorio y con caducidad.
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/python -m pytest alcance motor      # debe salir "21 passed"
+.venv/bin/python -m pytest alcance motor      # debe salir "23 passed"
 ```
 
 El motor no necesita ninguna librería (solo biblioteca estándar); `pytest` es solo

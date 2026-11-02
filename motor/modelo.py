@@ -13,6 +13,7 @@ import re
 import urllib.parse
 import urllib.error
 import urllib.request
+import uuid
 
 MISSING='Tu Kali no tiene la IA del aula configurada. Avisa al profesor.'
 NETWORK='No se llega al servicio de IA del aula.'
@@ -121,6 +122,7 @@ class Modelo:
             "model": self.nombre,
             "messages": mensajes,
             "tools": herramientas,
+            **self._marca(mensajes),
         }).encode()
         peticion = urllib.request.Request(self.url, data=cuerpo, headers={
             "Authorization": f"Bearer {self.clave}",
@@ -153,3 +155,13 @@ class Modelo:
             "uso": {"entrada": uso.get("prompt_tokens", 0),
                     "salida": uso.get("completion_tokens", 0)},
         }
+
+    def _marca(self, mensajes: list[dict]) -> dict:
+        """Marca de ejecución para el gateway del aula: agrupa las vueltas de una misma ejecución
+        para que el profesor vea cada ejecución completa. Solo con la IA del aula."""
+        if not self.es_aula:
+            return {}
+        if len(mensajes) <= 2 or not getattr(self, "_ejecucion", None):  # instrucciones + objetivo: empieza otra
+            self._ejecucion = str(uuid.uuid4())
+        paso = 1 + sum(1 for m in mensajes if m.get("role") == "assistant")
+        return {"metadata": {"aap": {"version": 1, "app": "corsario", "ejecucion": self._ejecucion, "paso": paso}}}

@@ -13,6 +13,11 @@ for carpeta in ("alcance", "motor"):
 from agente import Agente, LimiteAlcanzado  # noqa: E402
 from guard import protegida                 # noqa: E402
 from traza import Traza                     # noqa: E402
+from modelo import Modelo                   # noqa: E402
+
+import os
+import unittest
+import uuid
 
 SCOPE = (["*.empresa.com"], ["blog.empresa.com"])
 
@@ -83,3 +88,28 @@ def test_herramienta_inexistente_vuelve_como_texto(tmp_path):
     a = agente(tmp_path, [pide("rm_rf", ruta="/"), responde("fin")])
     a.ejecutar("x")
     assert eventos(tmp_path)[1]["resultado"].startswith("ERROR: no existe")
+
+
+class MarcaDeEjecucionTests(unittest.TestCase):
+    """La marca agrupa en el gateway las vueltas de una misma ejecución; solo con la IA del aula."""
+
+    def modelo(self, url):
+        from unittest import mock
+        with mock.patch.dict(os.environ, {"AAP_URL": url}):
+            return Modelo("corsario-1", clave="sk-" + "x" * 20)
+
+    def test_una_ejecucion_misma_marca_y_paso_creciente(self):
+        m = self.modelo("http://10.30.0.6:4000/v1/chat/completions")
+        inicio = [{"role": "system", "content": "i"}, {"role": "user", "content": "o"}]
+        a = m._marca(inicio)["metadata"]["aap"]
+        vuelta = inicio + [{"role": "assistant", "tool_calls": []}, {"role": "tool", "content": "r"}]
+        b = m._marca(vuelta)["metadata"]["aap"]
+        self.assertEqual((a["app"], a["version"], a["paso"], b["paso"]), ("corsario", 1, 1, 2))
+        self.assertEqual(a["ejecucion"], b["ejecucion"])
+        self.assertEqual(str(uuid.UUID(a["ejecucion"], version=4)), a["ejecucion"])
+        self.assertEqual(m._marca(vuelta)["metadata"]["aap"]["paso"], 2)  # un reintento no avanza
+        self.assertNotEqual(m._marca(inicio)["metadata"]["aap"]["ejecucion"], a["ejecucion"])  # otra ejecución
+
+    def test_sin_marca_fuera_del_aula(self):
+        m = self.modelo("https://openrouter.ai/api/v1/chat/completions")
+        self.assertEqual(m._marca([{"role": "user", "content": "o"}]), {})
