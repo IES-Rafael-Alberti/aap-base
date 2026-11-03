@@ -43,11 +43,11 @@ lectura** a este repositorio y con caducidad.
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/python -m pytest alcance motor      # debe salir "23 passed"
+.venv/bin/python -m pytest alcance motor herramientas
 ```
 
 El motor no necesita ninguna librería (solo biblioteca estándar); `pytest` es solo
-para las pruebas, que comprueban el `scope-guard` y el motor sin usar Internet.
+para las pruebas, que comprueban el `scope-guard`, el motor y las herramientas sin usar Internet.
 
 ## 3. Configuración
 
@@ -112,13 +112,21 @@ PY
 
 ### 3.3 Las herramientas
 
-El sistema incluye **una herramienta de ejemplo** (`whois_dominio`, en
-`herramientas/whois.py`) y es la única activa de partida. **El resto las tienes que
-incluir tú**.
+El sistema incluye **tres herramientas implementadas y activas de partida**:
 
-En `herramientas/tus_herramientas.py` tienes plantillas con `TODO` para empezar
-(`dns_registros`, `subdominios_crtsh`) y, en la cabecera, la lista de herramientas
-pasivas que puedes añadir. Cuando termines una:
+| Herramienta | Qué obtiene | Archivo |
+|---|---|---|
+| `whois_dominio` | Registro del dominio (WHOIS, con respaldo RDAP) | `herramientas/whois.py` |
+| `dns_registros` | Registros A, AAAA, MX, NS, TXT, CNAME y SOA | `herramientas/tus_herramientas.py` |
+| `subdominios_crtsh` | Subdominios de certificados públicos, filtrados por alcance | `herramientas/tus_herramientas.py` |
+
+No necesitan claves de APIs adicionales. Para consultar subdominios, incluye
+`*.empresa.com` en `scope.txt` solo si están autorizados, además del dominio raíz;
+las exclusiones con `!` se respetan siempre. Si crt.sh no responde, la herramienta
+devuelve el error para que el agente reconozca esa limitación.
+
+Usa estas funciones como ejemplos para añadir herramientas en
+`herramientas/tus_herramientas.py`. En su cabecera tienes ideas. Cuando termines una:
 
 1. Escríbela siguiendo el modelo de `whois.py` (una tarea, protegida, sin shell, con
    timeout, salida recortada, errores como texto).
@@ -131,14 +139,15 @@ ejemplo, una que use una API con registro), añade su clave al `.env` con el for
 
 ## 4. Uso
 
-De partida, con la herramienta de ejemplo, ya puedes lanzarlo:
+Con las tres herramientas iniciales, ya puedes lanzarlo:
 
 ```bash
 .venv/bin/python lanzar.py "Investiga el dominio <tu-objetivo>. Termina con un informe."
 ```
 
-El informe será pobre hasta que añadas más herramientas (paso 3.3): cuantas más tenga
-el agente, más completo será su reconocimiento.
+El informe inicial cubre registro, DNS y subdominios de certificados. No es un
+reconocimiento exhaustivo: amplía las fuentes con tus herramientas (paso 3.3) y
+comprueba que cada dato del informe está respaldado por la traza.
 
 **El prompt se construye solo** a partir de tu `scope.txt` y de las herramientas
 activas (lo fijo está en `instrucciones.md`, que normalmente no necesitas tocar).
@@ -180,7 +189,7 @@ cat salida/traza.log
 |---|---|---|
 | `motor/` | El bucle, el cliente del modelo y la traza | No |
 | `alcance/` | `en_alcance` (reglas de `scope.txt`) y `protegida` (el `scope-guard`) | No (viene hecho) |
-| `herramientas/` | `whois.py` de ejemplo y tus herramientas | Sí |
+| `herramientas/` | WHOIS, DNS, crt.sh y tus nuevas herramientas | Sí |
 | `scope.txt` | El alcance autorizado | Sí |
 | `instrucciones.md` | Plantilla del *prompt*; el alcance y las herramientas se rellenan solos | Opcional |
 | `lanzar.py` | Arranca el agente (lista `HERRAMIENTAS`) | La lista |

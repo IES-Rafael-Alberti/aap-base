@@ -1,42 +1,75 @@
-"""Tus herramientas de reconocimiento. AQUÍ TRABAJAS TÚ.
+"""Herramientas iniciales de reconocimiento. AQUÍ PUEDES AÑADIR LAS TUYAS.
 
-Tienes `whois.py` como ejemplo COMPLETO: cópialo como modelo. Cada herramienta debe:
-- hacer UNA tarea;
-- estar protegida con @protegida(objetivo="<arg>");
-- no usar shell (lista de argumentos, nunca shell=True);
-- tener timeout, recortar la salida y filtrar por el alcance lo que descubra;
-- devolver los errores como texto (no lanzar excepciones).
+WHOIS (whois.py), DNS y crt.sh ya están implementadas y activas en lanzar.py.
+DNS y crt.sh proceden de la solución del profesor (herramientas/recon.py).
 
-Cuando termines una, impórtala y añádela a la lista HERRAMIENTAS de lanzar.py.
+Para ampliar: una tarea por función, @protegida, sin shell, con timeout,
+salida recortada, errores como texto y resultados filtrados por el alcance.
+Importa tu nueva función en lanzar.py y añádela a HERRAMIENTAS.
 
-Herramientas pasivas que puedes construir (al menos 2, como pide la Parte 2.2):
-  dns_registros, subdominios_crtsh, subdominios_subfinder, ficheros_expuestos,
-  wayback_urls, correos (theHarvester / hunter.io), infraestructura_ip,
-  correo_postura (SPF/DMARC/MTA-STS/CAA), urlscan, shodan_host.
+Ideas: subdominios_subfinder, wayback_urls, correos (theHarvester / hunter.io),
+infraestructura_ip, correo_postura (SPF/DMARC/MTA-STS/CAA), urlscan, shodan_host.
 """
 
-import subprocess  # noqa: F401
-import urllib.request  # noqa: F401
+import json
+import subprocess
+import urllib.parse
+import urllib.request
 
-from guard import protegida, filtrar  # noqa: F401
-from whois import recortar  # noqa: F401
+from guard import protegida, filtrar
+from whois import recortar
+
+UA = "aap-recon/1.0 (educativo; IES Rafael Alberti)"
+TIPOS_DNS = {"A", "AAAA", "MX", "NS", "TXT", "CNAME", "SOA"}
+
+
+def _http(url: str, timeout: int = 30) -> str:
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read().decode("utf-8", "replace")
 
 
 @protegida(objetivo="dominio")
 def dns_registros(dominio: str, tipo: str = "A") -> str:
     """Consulta registros DNS de un dominio. tipo: A, AAAA, MX, NS, TXT, CNAME o SOA.
     Devuelve los valores, uno por línea."""
-    # TODO: valida `tipo` contra una lista cerrada (no cualquier cosa).
-    # TODO: ejecuta `dig +short <tipo> <dominio>` con subprocess (sin shell, con timeout).
-    # TODO: devuelve la salida recortada, o un texto si no hay registros o falla.
-    raise NotImplementedError("Implementa dns_registros (mira whois.py como modelo).")
+    tipo = tipo.upper()
+    if tipo not in TIPOS_DNS:
+        return f"ERROR: tipo DNS no válido ({tipo}). Usa uno de: {', '.join(sorted(TIPOS_DNS))}."
+    try:
+        r = subprocess.run(["dig", "+short", tipo, dominio],
+                           capture_output=True, text=True, timeout=20)
+    except subprocess.TimeoutExpired:
+        return "ERROR: dig no respondió en 20 segundos."
+    except OSError as e:
+        return recortar(f"ERROR: no se pudo ejecutar dig: {e}")
+    if r.returncode != 0:
+        return recortar(f"ERROR: dig falló ({r.returncode}): {r.stderr.strip() or 'sin detalles'}")
+    salida = recortar(r.stdout.strip())
+    return salida or f"Sin registros {tipo} para {dominio}."
 
 
 @protegida(objetivo="dominio")
 def subdominios_crtsh(dominio: str) -> str:
-    """Enumera subdominios por transparencia de certificados (crt.sh). Pasivo.
-    Devuelve solo los subdominios dentro del alcance."""
-    # TODO: pide https://crt.sh/?q=%25.<dominio>&output=json y parsea el JSON.
-    # TODO: junta los nombres (quita '*.') y deja solo los que estén en alcance (filtrar()).
-    # TODO: devuelve el resultado recortado.
-    raise NotImplementedError("Implementa subdominios_crtsh (mira whois.py como modelo).")
+    """Enumera subdominios de un dominio por transparencia de certificados (crt.sh).
+    Pasivo: no toca el objetivo. Devuelve solo los subdominios dentro del alcance."""
+    url = f"https://crt.sh/?q=%25.{urllib.parse.quote(dominio)}&output=json"
+    try:
+        datos = json.loads(_http(url, timeout=90))
+    except Exception as e:
+        return (f"ERROR: crt.sh no respondió ({e}). crt.sh suele ir lento; "
+                "puedes reintentar más tarde o añadir otra fuente de subdominios.")
+    if not isinstance(datos, list) or any(
+        not isinstance(fila, dict) or not isinstance(fila.get("name_value"), str)
+        for fila in datos
+    ):
+        return "ERROR: crt.sh devolvió un formato de certificados inesperado."
+    nombres = set()
+    for fila in datos:
+        for n in str(fila.get("name_value", "")).splitlines():
+            n = n.strip().lstrip("*.").lower()
+            if n:
+                nombres.add(n)
+    dentro, fuera = filtrar(sorted(nombres))
+    cab = f"{len(dentro)} subdominios en alcance ({fuera} filtrados por estar fuera):\n"
+    return recortar(cab + "\n".join(dentro))

@@ -20,15 +20,16 @@ from modelo import Modelo                   # noqa: E402
 from prompt import construir                # noqa: E402
 from traza import Traza                     # noqa: E402
 from whois import whois_dominio             # noqa: E402
+from tus_herramientas import dns_registros, subdominios_crtsh  # noqa: E402
 
 # A medida que construyas tus herramientas en herramientas/tus_herramientas.py,
 # impórtalas aquí y añádelas a la lista. Por ejemplo:
-#   from tus_herramientas import dns_registros, subdominios_crtsh
+#   from tus_herramientas import subdominios_subfinder
 
 HERRAMIENTAS = [
     whois_dominio,
-    # dns_registros,
-    # subdominios_crtsh,
+    dns_registros,
+    subdominios_crtsh,
     # ... añade las tuyas
 ]
 
