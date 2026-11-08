@@ -10,8 +10,10 @@ La primera pieza del **Auditor Agéntico Progresivo**: un agente de reconocimien
 
 ## 1. Descarga
 
-Tu Kali ya trae lo necesario (`python3`, `whois`, `dig`, `subfinder`, `theHarvester`,
-`curl`). Solo tienes que clonar el repositorio:
+Tu Kali trae `python3`, `whois`, `dig` y `curl`, suficientes para las herramientas
+iniciales. `subfinder` y `theHarvester` no están garantizados en un puesto recién
+clonado: si amplías el agente para usarlos, pide al profesor que compruebe su
+instalación. Para empezar, clona el repositorio:
 
 ```bash
 cd ~
