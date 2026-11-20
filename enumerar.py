@@ -1,10 +1,10 @@
-"""Lanza el agente en la fase de ENUMERACIÓN (UD2), separada del recon pasivo.
+"""Lanza el agente en la fase de ENUMERACIÓN, separada del recon pasivo.
 
     python enumerar.py --ver-prompt          # ver el prompt montado (no gasta)
     python enumerar.py "Enumera la red interna autorizada y sus vulnerabilidades potenciales. Termina con un informe."
 
 Usa el MISMO scope.txt que lanzar.py, pero sus propias instrucciones
-(instrucciones-enumeracion.md) y sus propias herramientas (tus_herramientas_ud2.py).
+(instrucciones-enumeracion.md) y sus propias herramientas (tus_herramientas_enumeracion.py).
 
 Cada ejecución queda en SU PROPIA CARPETA, sin pisar las anteriores:
     salida/ejecuciones/2026-11-19_2027/
@@ -30,7 +30,7 @@ from modelo import Modelo                   # noqa: E402
 from prompt import construir                # noqa: E402
 from traza import Traza                     # noqa: E402
 import escaneo                              # noqa: E402
-from tus_herramientas_ud2 import nmap_descubrir, nmap_servicios, cve_lookup  # noqa: E402
+from tus_herramientas_enumeracion import nmap_descubrir, nmap_servicios, cve_lookup  # noqa: E402
 
 HERRAMIENTAS = [
     nmap_descubrir,

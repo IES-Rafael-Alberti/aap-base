@@ -1,4 +1,4 @@
-"""Tus herramientas de ENUMERACIÓN (UD2). AQUÍ TRABAJAS TÚ.
+"""Tus herramientas de ENUMERACIÓN. AQUÍ TRABAJAS TÚ.
 
 Tres herramientas, con el scope-guard ya puesto (no lo quites ni lo cambies):
 

@@ -27,7 +27,7 @@ def test_dentro_llega_a_la_herramienta(proyecto):
 
 
 def test_convierte_el_puerto_a_numero(proyecto):
-    import tus_herramientas_ud2 as t
+    import tus_herramientas_enumeracion as t
     assert probar.argumentos(t.cve_lookup, ["host=10.88.0.20", "puerto=9200"]) == \
         {"host": "10.88.0.20", "puerto": 9200}
 

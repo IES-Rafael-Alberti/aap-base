@@ -1,6 +1,6 @@
 """Interroga al agente sobre su último trabajo.
 
-    python interrogar.py                        # sobre la última enumeración (UD2)
+    python interrogar.py                        # sobre la última enumeración
     python interrogar.py salida/ejecuciones/2026-11-19_2027/traza.jsonl   # sobre una concreta
     python interrogar.py salida/traza.jsonl     # o sobre el recon de la UD1
     python interrogar.py --ver-prompt           # ver qué recibe el agente (no gasta)

@@ -12,7 +12,7 @@ herramientas/recon.py
 
 .DS_Store
 
-# Solución del profesor de la UD2 (enumeración)
+# Solución del profesor de la fase de enumeración
 herramientas/enumeracion.py
 herramientas/test_enumeracion_profesor.py
 

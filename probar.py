@@ -6,7 +6,7 @@
     python probar.py cve_lookup host=10.88.0.20 puerto=9200
 
 Usa tu scope.txt y el MISMO scope-guard que el agente. Busca la herramienta en
-herramientas/tus_herramientas_ud2.py (o en el módulo que indiques con --modulo).
+herramientas/tus_herramientas_enumeracion.py (o en el módulo que indiques con --modulo).
 Las evidencias de las pruebas van a salida/pruebas/evidencias/, aparte de las del agente.
 """
 
@@ -45,7 +45,7 @@ def main(argv=None) -> str:
     p = argparse.ArgumentParser(description="Prueba una herramienta a mano (sin modelo).")
     p.add_argument("herramienta", help="p. ej. nmap_descubrir")
     p.add_argument("args", nargs="*", help="nombre=valor")
-    p.add_argument("--modulo", default="tus_herramientas_ud2")
+    p.add_argument("--modulo", default="tus_herramientas_enumeracion")
     a = p.parse_args(argv)
 
     guard.fijar_scope(cargar(RAIZ / "scope.txt"))

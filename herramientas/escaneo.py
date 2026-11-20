@@ -1,6 +1,6 @@
-"""Piezas comunes de la fase de ENUMERACIÓN (UD2). Vienen hechas: no las toques.
+"""Piezas comunes de la fase de ENUMERACIÓN. Vienen hechas: no las toques.
 
-Las usan tus herramientas de tus_herramientas_ud2.py. Aquí está la fontanería:
+Las usan tus herramientas de tus_herramientas_enumeracion.py. Aquí está la fontanería:
 
 - lanzar nmap con las opciones que fija el profesor y leer su resultado;
 - guardar la EVIDENCIA COMPLETA en la carpeta de la ejecución, con un identificador;
