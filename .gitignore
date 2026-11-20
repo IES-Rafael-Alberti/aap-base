@@ -11,3 +11,11 @@ GUIA.md
 herramientas/recon.py
 
 .DS_Store
+
+# Solución del profesor de la UD2 (enumeración)
+herramientas/enumeracion.py
+herramientas/test_enumeracion_profesor.py
+
+# Lanzadores de las versiones acabadas (solo del profesor, repo Corsario)
+lanzar_solucion.py
+enumerar_solucion.py

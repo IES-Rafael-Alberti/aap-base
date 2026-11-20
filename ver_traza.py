@@ -22,8 +22,14 @@ def legible(eventos) -> str:
             marca = "  [BLOQUEADO]" if e["bloqueado"] else ""
             salida.append(f"[{e['paso']}] modelo → {e['nombre']}({e['argumentos']}){marca}")
             salida.append(f"    ← {una_linea(e['resultado'])}")
+        elif e["tipo"] == "pregunta":                     # interrogar.py
+            salida.append(f"\nPREGUNTA: {e['pregunta']}")
+            salida.append(f"RESPUESTA: {e['respuesta']}")
+        elif e["tipo"] == "fin" and not e.get("informe") and e.get("paso") == 0:
+            salida.append(f"# fin del interrogatorio · tokens: {e['tokens']}")
         elif e["tipo"] == "fin":
-            salida.append(f"# fin en el paso {e['paso']} · tokens: {e['tokens']}")
+            parcial = " · informe PARCIAL (por límite)" if e.get("parcial") else ""
+            salida.append(f"# fin en el paso {e['paso']} · tokens: {e['tokens']}{parcial}")
         elif e["tipo"] == "limite":
             salida.append(f"# PARADO por límite de {e['motivo']} · tokens: {e['tokens']}")
     return "\n".join(salida) + "\n"

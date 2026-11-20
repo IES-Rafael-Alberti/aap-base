@@ -4,7 +4,8 @@
 2. Pide una herramienta con unos argumentos.
 3. El código la ejecuta (siempre a través del scope-guard) y le devuelve el resultado.
 4. Vuelta al paso 2, hasta que el modelo responde sin pedir herramientas
-   o se alcanza un límite.
+   o se alcanza un límite. Si se alcanza, el modelo tiene UNA última vuelta,
+   ya sin herramientas, para redactar el informe con lo que tenga (parcial).
 
 El modelo nunca ejecuta nada: solo pide.
 """
@@ -35,6 +36,11 @@ def describir(herramienta) -> dict:
 
 class LimiteAlcanzado(Exception):
     pass
+
+
+CIERRE = ("Has alcanzado el límite de {motivo} de esta ejecución. Ya NO puedes usar "
+          "herramientas. Redacta AHORA el informe final con lo que tengas, con el formato "
+          "pedido, y di al principio que es PARCIAL y qué quedó sin hacer.")
 
 
 class Agente:
@@ -97,8 +103,24 @@ class Agente:
                                  "content": resultado})
 
             if sum(self.tokens.values()) > self.max_tokens:
-                self.traza.evento("limite", motivo="tokens", tokens=self.tokens)
-                raise LimiteAlcanzado(f"Superado el máximo de {self.max_tokens} tokens")
+                return self._informe_de_cierre(mensajes, "tokens", paso,
+                                               f"Superado el máximo de {self.max_tokens} tokens")
 
-        self.traza.evento("limite", motivo="pasos", tokens=self.tokens)
-        raise LimiteAlcanzado(f"Superado el máximo de {self.max_pasos} pasos")
+        return self._informe_de_cierre(mensajes, "pasos", self.max_pasos,
+                                       f"Superado el máximo de {self.max_pasos} pasos")
+
+    def _informe_de_cierre(self, mensajes, motivo, paso, aviso) -> str:
+        """Última vuelta SIN herramientas para que siempre haya informe, aunque sea parcial."""
+        self.traza.evento("limite", motivo=motivo, tokens=self.tokens)
+        mensajes.append({"role": "user", "content": CIERRE.format(motivo=motivo)})
+        try:
+            r = self.modelo.responder(mensajes, [])
+        except Exception as e:
+            raise LimiteAlcanzado(f"{aviso} y el informe de cierre falló: {e}") from e
+        for k in self.tokens:
+            self.tokens[k] += r["uso"][k]
+        informe = (r["mensaje"].get("content") or "").strip()
+        if not informe or r["mensaje"].get("tool_calls"):
+            raise LimiteAlcanzado(f"{aviso} y el modelo no redactó informe")
+        self.traza.evento("fin", paso=paso + 1, informe=informe, tokens=self.tokens, parcial=True)
+        return informe

@@ -121,7 +121,7 @@ class Modelo:
         cuerpo = json.dumps({
             "model": self.nombre,
             "messages": mensajes,
-            "tools": herramientas,
+            **({"tools": herramientas} if herramientas else {}),  # sin herramientas: solo conversar
             **self._marca(mensajes),
         }).encode()
         peticion = urllib.request.Request(self.url, data=cuerpo, headers={

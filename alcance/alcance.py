@@ -15,9 +15,14 @@ Reglas, en este orden:
   3. Coincidencia exacta.
   4. Comodines y rangos.
   5. Todo lo demás, fuera (lista blanca).
+
+Si lo que se pide es un RANGO (10.10.0.0/16), se comprueba aparte: tiene que
+caber entero dentro de una inclusión y no contener ninguna exclusión. Lo que va
+tras la barra es el tamaño de la red; no se puede descartar como en una URL.
 """
 
 import ipaddress
+import re
 from pathlib import Path
 
 
@@ -70,8 +75,45 @@ def cargar(ruta: str | Path) -> tuple[list[str], list[str]]:
     return incluir, excluir
 
 
+def _como_red(regla: str):
+    """Una regla del scope como red: 10.10.0.0/24 o una IP sola (/32)."""
+    try:
+        return ipaddress.ip_network(regla, strict=False)
+    except ValueError:
+        return None
+
+
+def _red_en_alcance(red, scope) -> bool:
+    """Un rango pedido está en alcance solo si cabe ENTERO en una inclusión
+    y no contiene ninguna exclusión (escanearlo tocaría lo excluido)."""
+    incluir, excluir = scope
+    for regla in excluir:
+        r = _como_red(regla)
+        if r is not None and r.version == red.version and red.overlaps(r):
+            return False
+    for regla in incluir:
+        r = _como_red(regla)
+        if r is not None and r.version == red.version and red.subnet_of(r):
+            return True
+    return False
+
+
 def en_alcance(objetivo: str, scope: tuple[list[str], list[str]]) -> bool:
     incluir, excluir = scope
+    # Rango pedido (10.10.0.0/16): lo que va tras la barra es su TAMAÑO, no una
+    # ruta web. No se puede normalizar quitándolo: hay que comprobarlo entero.
+    pedido = objetivo.strip().lower()
+    if "://" not in pedido and "/" in pedido:
+        base = pedido.split("/", 1)[0]
+        if _como_ip(base) is not None:
+            # Una IP con barra es un rango, y solo vale escrito tal cual: 10.10.0.0/24.
+            # Nada de «/ 24», «/+24», «/24x» ni máscaras (/255.255.255.0).
+            if not re.fullmatch(r"[0-9a-f.:]+/\d{1,3}", pedido):
+                return False
+            red = _como_red(pedido)
+            return red is not None and _red_en_alcance(red, scope)
+        if re.fullmatch(r"[^/\s]+/\d+", pedido):     # nombre/24: no es un rango válido
+            return False
     t = normalizar(objetivo)
     if not t:
         return False

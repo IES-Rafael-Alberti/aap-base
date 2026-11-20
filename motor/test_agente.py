@@ -84,6 +84,20 @@ def test_limite_de_pasos(tmp_path):
     assert eventos(tmp_path)[-1] == {**eventos(tmp_path)[-1], "tipo": "limite", "motivo": "pasos"}
 
 
+def test_al_llegar_al_limite_redacta_informe_parcial_sin_herramientas(tmp_path):
+    a = agente(tmp_path, [pide("eco", dominio="api.empresa.com")] * 3 + [responde("informe parcial")],
+               max_pasos=3)
+    assert a.ejecutar("x") == "informe parcial"
+    ev = eventos(tmp_path)
+    assert [e["tipo"] for e in ev[-2:]] == ["limite", "fin"] and ev[-1]["parcial"] is True
+
+
+def test_limite_de_tokens_tambien_cierra_con_informe(tmp_path):
+    a = agente(tmp_path, [pide("eco", dominio="api.empresa.com"), responde("parcial")], max_tokens=5)
+    assert a.ejecutar("x") == "parcial"
+    assert eventos(tmp_path)[-2]["motivo"] == "tokens"
+
+
 def test_herramienta_inexistente_vuelve_como_texto(tmp_path):
     a = agente(tmp_path, [pide("rm_rf", ruta="/"), responde("fin")])
     a.ejecutar("x")
