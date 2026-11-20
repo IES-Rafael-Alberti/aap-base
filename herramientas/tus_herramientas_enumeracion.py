@@ -6,7 +6,9 @@ Tres herramientas, con el scope-guard ya puesto (no lo quites ni lo cambies):
 - nmap_servicios(host)       puertos TCP abiertos, servicios y versiones de UN equipo
 - cve_lookup(host, puerto)   vulnerabilidades POTENCIALES del servicio de ese puerto
 
-La fontanería viene hecha en escaneo.py (léelo antes de empezar). Lo tuyo es:
+No hace falta que las programes a mano: constrúyelas con un modelo de lenguaje, dándole
+como contexto este fichero, escaneo.py y whois.py (método en los apuntes, «El agente»).
+La fontanería viene hecha en escaneo.py. Lo que tienes que conseguir, y comprobar:
 
 1. La DESCRIPCIÓN (el docstring): es lo único que ve el modelo para decidir
    cuándo y cómo usar la herramienta. Una descripción vaga = un agente torpe.
